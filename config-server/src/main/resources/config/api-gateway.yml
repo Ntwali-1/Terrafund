@@ -6,57 +6,60 @@ spring:
     name: api-gateway
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
       routes:
         - id: user-service-auth
           uri: lb://user-service
           predicates:
             - Path=/api/auth/**
-        
+
         - id: user-service
           uri: lb://user-service
           predicates:
             - Path=/api/users/**
           filters:
             - AuthenticationFilter
-        
+
         - id: investment-service
           uri: lb://investment-service
           predicates:
             - Path=/api/investments/**
           filters:
             - AuthenticationFilter
-        
+
         - id: land-service
           uri: lb://land-service
           predicates:
             - Path=/api/lands/**
           filters:
             - AuthenticationFilter
-        
+
         - id: user-service-swagger
           uri: lb://user-service
           predicates:
             - Path=/user-service/v3/api-docs/**
           filters:
-            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-        
+            - RewritePath=/user-service/(?<segment>.*), /${segment}
+
         - id: investment-service-swagger
           uri: lb://investment-service
           predicates:
             - Path=/investment-service/v3/api-docs/**
           filters:
-            - RewritePath=/investment-service/(?<segment>.*), /$\{segment}
-        
+            - RewritePath=/investment-service/(?<segment>.*), /${segment}
+
         - id: land-service-swagger
           uri: lb://land-service
           predicates:
             - Path=/land-service/v3/api-docs/**
           filters:
-            - RewritePath=/land-service/(?<segment>.*), /$\{segment}
-      
+            - RewritePath=/land-service/(?<segment>.*), /${segment}
+
       globalcors:
         cors-configurations:
-          '[/**]':
+          "[/**]":
             allowedOrigins: "*"
             allowedMethods:
               - GET
@@ -71,17 +74,19 @@ springdoc:
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
-    config-url: /v3/api-docs/swagger-config
+    display-query-params-email: true
     urls:
-      - name: User Service
+      - name: user-service
         url: /user-service/v3/api-docs
-      - name: Investment Service
+        displayName: User Service
+      - name: investment-service
         url: /investment-service/v3/api-docs
-      - name: Land Service
+        displayName: Investment Service
+      - name: land-service
         url: /land-service/v3/api-docs
+        displayName: Land Service
   api-docs:
     enabled: true
-    path: /v3/api-docs
 
 eureka:
   client:

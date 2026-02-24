@@ -4,10 +4,10 @@ server:
 spring:
   application:
     name: config-server
-  
+
   profiles:
     active: native
-  
+
   cloud:
     config:
       server:
