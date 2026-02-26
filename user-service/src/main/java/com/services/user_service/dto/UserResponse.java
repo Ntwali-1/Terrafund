@@ -21,6 +21,34 @@ public class UserResponse {
     private String jwtToken;
     private Boolean isActive;
     private Set<Role> roles;
+    
+    // Profile enhancements
+    private String profilePictureUrl;
+    private String bio;
+    private LocalDateTime dateOfBirth;
+    
+    // Address
+    private String country;
+    private String province;
+    private String district;
+    private String sector;
+    private String cell;
+    private String village;
+    private String streetAddress;
+    
+    // KYC
+    private String idNumber;
+    private String idType;
+    private String verificationStatus;
+    private LocalDateTime verifiedAt;
+    
+    // Profile completion
+    private Integer profileCompletionPercentage;
+    
+    // Ratings
+    private Double averageRating;
+    private Integer totalRatings;
+    
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

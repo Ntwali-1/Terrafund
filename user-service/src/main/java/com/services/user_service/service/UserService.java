@@ -18,4 +18,15 @@ public interface UserService {
     void verifyEmail(String token);
 
     void resendVerificationEmail(String email);
+    
+    // New profile enhancement methods
+    UserResponse updateProfile(Long userId, UpdateProfileRequest request);
+    
+    UserResponse submitKYC(Long userId, SubmitKYCRequest request);
+    
+    UserResponse approveKYC(Long userId, Long adminId, String notes);
+    
+    UserResponse rejectKYC(Long userId, Long adminId, String reason);
+    
+    UserResponse getUserById(Long userId);
 }

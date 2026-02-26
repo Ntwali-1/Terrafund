@@ -2,6 +2,7 @@ package com.services.user_service.service.impl;
 
 import com.services.user_service.dto.*;
 import com.services.user_service.entity.User;
+import com.services.user_service.entity.UserActivity;
 import com.services.user_service.entity.UserRole;
 import com.services.user_service.entity.VerificationToken;
 import com.services.user_service.enums.Role;
@@ -9,12 +10,15 @@ import com.services.user_service.repository.UserRepository;
 import com.services.user_service.repository.UserRoleRepository;
 import com.services.user_service.repository.VerificationTokenRepository;
 import com.services.user_service.security.JwtService;
+import com.services.user_service.service.UserActivityService;
 import com.services.user_service.service.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -22,7 +26,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -30,6 +33,23 @@ public class UserServiceImpl implements UserService {
     private final VerificationTokenRepository verificationTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final UserActivityService activityService;
+
+    @Autowired
+    public UserServiceImpl(
+            UserRepository userRepository,
+            UserRoleRepository userRoleRepository,
+            VerificationTokenRepository verificationTokenRepository,
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService,
+            @Lazy UserActivityService activityService) {
+        this.userRepository = userRepository;
+        this.userRoleRepository = userRoleRepository;
+        this.verificationTokenRepository = verificationTokenRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+        this.activityService = activityService;
+    }
 
     @Override
     @Transactional
@@ -55,6 +75,17 @@ public class UserServiceImpl implements UserService {
         verificationToken.setExpiryDate(LocalDateTime.now().plusHours(24));
         verificationTokenRepository.save(verificationToken);
 
+        // Log activity
+        activityService.logActivity(
+                savedUser.getId(),
+                UserActivity.ActivityType.SIGNUP,
+                "User signed up",
+                "USER",
+                savedUser.getId(),
+                null,
+                null
+        );
+
         // TODO: Send verification email
         // emailService.sendVerificationEmail(savedUser.getEmail(), token);
 
@@ -77,6 +108,17 @@ public class UserServiceImpl implements UserService {
         String token = jwtService.generateToken(user);
         user.setJwt(token);
         userRepository.save(user);
+
+        // Log activity
+        activityService.logActivity(
+                user.getId(),
+                UserActivity.ActivityType.LOGIN,
+                "User logged in",
+                "USER",
+                user.getId(),
+                null,
+                null
+        );
 
         Set<Role> roles = user.getRoles().stream()
                 .map(UserRole::getRole)
@@ -155,6 +197,17 @@ public class UserServiceImpl implements UserService {
         user.setIsVerified(true);
         userRepository.save(user);
 
+        // Log activity
+        activityService.logActivity(
+                user.getId(),
+                UserActivity.ActivityType.EMAIL_VERIFIED,
+                "Email verified successfully",
+                "USER",
+                user.getId(),
+                null,
+                null
+        );
+
         // Delete the used token
         verificationTokenRepository.delete(verificationToken);
     }
@@ -197,11 +250,149 @@ public class UserServiceImpl implements UserService {
         response.setCreatedAt(user.getCreatedAt());
         response.setUpdatedAt(user.getUpdatedAt());
 
+        // Profile enhancements
+        response.setProfilePictureUrl(user.getProfilePictureUrl());
+        response.setBio(user.getBio());
+        response.setDateOfBirth(user.getDateOfBirth());
+        
+        // Address
+        response.setCountry(user.getCountry());
+        response.setProvince(user.getProvince());
+        response.setDistrict(user.getDistrict());
+        response.setSector(user.getSector());
+        response.setCell(user.getCell());
+        response.setVillage(user.getVillage());
+        response.setStreetAddress(user.getStreetAddress());
+        
+        // KYC
+        response.setIdNumber(user.getIdNumber());
+        response.setIdType(user.getIdType());
+        response.setVerificationStatus(user.getVerificationStatus() != null ? 
+                user.getVerificationStatus().name() : null);
+        response.setVerifiedAt(user.getVerifiedAt());
+        
+        // Profile completion
+        response.setProfileCompletionPercentage(user.getProfileCompletionPercentage());
+        
+        // Ratings
+        response.setAverageRating(user.getAverageRating());
+        response.setTotalRatings(user.getTotalRatings());
+
         Set<Role> roles = user.getRoles().stream()
                 .map(UserRole::getRole)
                 .collect(Collectors.toSet());
         response.setRoles(roles);
 
         return response;
+    }
+    
+    @Override
+    @Transactional
+    public UserResponse updateProfile(Long userId, UpdateProfileRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (request.getFullName() != null && !request.getFullName().isBlank()) {
+            user.setFullName(request.getFullName());
+        }
+        if (request.getPhoneNumber() != null) {
+            user.setPhoneNumber(request.getPhoneNumber());
+        }
+        if (request.getProfilePictureUrl() != null) {
+            user.setProfilePictureUrl(request.getProfilePictureUrl());
+        }
+        if (request.getBio() != null) {
+            user.setBio(request.getBio());
+        }
+        if (request.getDateOfBirth() != null) {
+            user.setDateOfBirth(request.getDateOfBirth());
+        }
+        
+        // Address
+        if (request.getCountry() != null) {
+            user.setCountry(request.getCountry());
+        }
+        if (request.getProvince() != null) {
+            user.setProvince(request.getProvince());
+        }
+        if (request.getDistrict() != null) {
+            user.setDistrict(request.getDistrict());
+        }
+        if (request.getSector() != null) {
+            user.setSector(request.getSector());
+        }
+        if (request.getCell() != null) {
+            user.setCell(request.getCell());
+        }
+        if (request.getVillage() != null) {
+            user.setVillage(request.getVillage());
+        }
+        if (request.getStreetAddress() != null) {
+            user.setStreetAddress(request.getStreetAddress());
+        }
+
+        // Calculate profile completion
+        user.calculateProfileCompletion();
+
+        User updatedUser = userRepository.save(user);
+        return mapToUserResponse(updatedUser);
+    }
+
+    @Override
+    @Transactional
+    public UserResponse submitKYC(Long userId, SubmitKYCRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setIdNumber(request.getIdNumber());
+        user.setIdType(request.getIdType());
+        user.setIdDocumentUrl(request.getIdDocumentUrl());
+        user.setVerificationStatus(User.VerificationStatus.PENDING);
+
+        // Calculate profile completion
+        user.calculateProfileCompletion();
+
+        User updatedUser = userRepository.save(user);
+        return mapToUserResponse(updatedUser);
+    }
+
+    @Override
+    @Transactional
+    public UserResponse approveKYC(Long userId, Long adminId, String notes) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setVerificationStatus(User.VerificationStatus.VERIFIED);
+        user.setVerifiedAt(LocalDateTime.now());
+        user.setVerifiedBy(adminId);
+        user.setVerificationNotes(notes);
+
+        // Calculate profile completion
+        user.calculateProfileCompletion();
+
+        User updatedUser = userRepository.save(user);
+        return mapToUserResponse(updatedUser);
+    }
+
+    @Override
+    @Transactional
+    public UserResponse rejectKYC(Long userId, Long adminId, String reason) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setVerificationStatus(User.VerificationStatus.REJECTED);
+        user.setVerifiedBy(adminId);
+        user.setVerificationNotes(reason);
+
+        User updatedUser = userRepository.save(user);
+        return mapToUserResponse(updatedUser);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserResponse getUserById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return mapToUserResponse(user);
     }
 }
