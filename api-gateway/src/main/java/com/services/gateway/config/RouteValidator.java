@@ -20,6 +20,11 @@ public class RouteValidator {
                         "/swagger-ui.html",
                         "/webjars/",
                         "/swagger-resources",
+                        "/swagger-config",
+                        "/api-docs",
+                        "/user-service/v3/api-docs",
+                        "/investment-service/v3/api-docs",
+                        "/land-service/v3/api-docs",
                         "/actuator");
 
         public Predicate<ServerHttpRequest> isSecured = request -> openApiEndpoints

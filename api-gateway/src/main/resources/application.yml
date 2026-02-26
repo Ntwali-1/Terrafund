@@ -9,3 +9,19 @@ spring:
       uri: ${SPRING_CLOUD_CONFIG_URI:http://localhost:8888}
       fail-fast: false
       enabled: true
+
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    urls:
+      - name: User Service
+        url: /user-service/v3/api-docs
+      - name: Investment Service
+        url: /investment-service/v3/api-docs
+      - name: Land Service
+        url: /land-service/v3/api-docs
+  api-docs:
+    enabled: true

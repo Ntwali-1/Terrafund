@@ -57,3 +57,9 @@ application:
   validation:
     min-land-area: 100
     max-land-area: 1000000
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
