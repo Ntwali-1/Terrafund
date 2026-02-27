@@ -13,13 +13,14 @@
         <module name="user-service" />
         <module name="eureka-server" />
       </profile>
-      <profile name="Annotation profile for land-service" enabled="true">
+      <profile name="Annotation profile for file-storage" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
         </processorPath>
+        <module name="file-storage" />
         <module name="land-service" />
       </profile>
     </annotationProcessing>
@@ -29,6 +30,7 @@
       <module name="api-gateway" options="-parameters" />
       <module name="config-server" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
+      <module name="file-storage" options="-parameters" />
       <module name="investment-service" options="-parameters" />
       <module name="land-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
