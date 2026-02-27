@@ -6,9 +6,9 @@ spring:
     name: land-service
 
   datasource:
-    url: ${LAND_DATASOURCE_URL:jdbc:postgresql://localhost:5432/landdb}
-    username: ${LAND_DATASOURCE_USERNAME:postgres}
-    password: ${LAND_DATASOURCE_PASSWORD:postgres}
+    url: ${LAND_DATASOURCE_URL}
+    username: ${LAND_DATASOURCE_USERNAME}
+    password: ${LAND_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
