@@ -106,7 +106,12 @@
 			<version>2.3.0</version>
 		</dependency>
 
-
+		<!-- Spring Dotenv - Load .env files -->
+		<dependency>
+			<groupId>me.paulschwarz</groupId>
+			<artifactId>spring-dotenv</artifactId>
+			<version>4.0.0</version>
+		</dependency>
 
 		<!-- Spring Boot Test -->
 		<dependency>
