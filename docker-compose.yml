@@ -120,6 +120,25 @@ services:
     networks:
       - land-platform-network
 
+  file-storage:
+    build:
+      context: ./file-storage
+      dockerfile: Dockerfile
+    container_name: file-storage-service
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+    depends_on:
+      - eureka-server
+      - config-server
+    networks:
+      - microservices-network
+
 networks:
   land-platform-network:
     driver: bridge
