@@ -1,6 +1,8 @@
 spring:
   application:
     name: file-storage
+  config:
+    import: configserver:http://localhost:8888
   servlet:
     multipart:
       enabled: true
@@ -33,3 +35,12 @@ management:
   endpoint:
     health:
       show-details: always
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operations-sorter: method
+    tags-sorter: alpha

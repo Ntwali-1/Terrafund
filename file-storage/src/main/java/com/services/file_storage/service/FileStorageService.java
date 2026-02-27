@@ -38,7 +38,10 @@ public class FileStorageService {
         try {
             Map<String, Object> uploadParams = ObjectUtils.asMap(
                     "folder", folder != null ? folder : "uploads",
-                    "resource_type", "auto"
+                    "resource_type", "auto",
+                    "public_id", file.getOriginalFilename().split("\\.")[0] + "_" + System.currentTimeMillis(),
+                    "overwrite", true,
+                    "secure", true
             );
 
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(), uploadParams);
@@ -111,6 +114,15 @@ public class FileStorageService {
                         .height(height)
                         .crop(crop != null ? crop : "fill"))
                 .generate(publicId);
+    }
+
+    public String getSignedUrl(String publicId) {
+        try {
+            return cloudinary.url().signed(true).generate(publicId);
+        } catch (Exception e) {
+            log.error("Error generating signed URL: {}", e.getMessage());
+            return cloudinary.url().generate(publicId);
+        }
     }
 
     private void validateFile(MultipartFile file) {
