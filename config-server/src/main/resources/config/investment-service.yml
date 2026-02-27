@@ -7,9 +7,9 @@ spring:
 
   # Database Configuration
   datasource:
-    url: jdbc:postgresql://localhost:5432/investmentdb
-    username: postgres
-    password: postgres
+    url: ${INVESTMENT_DATASOURCE_URL:jdbc:postgresql://localhost:5432/investmentdb}
+    username: ${INVESTMENT_DATASOURCE_USERNAME:postgres}
+    password: ${INVESTMENT_DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -38,8 +38,8 @@ eureka:
 
 # JWT Configuration (MUST match user-service secret)
 jwt:
-  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-  expiration: 86400000
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:86400000}
 
 # Logging
 logging:

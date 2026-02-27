@@ -30,9 +30,11 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/userdb
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
     depends_on:
       - config-server
@@ -48,6 +50,11 @@ services:
     ports:
       - "8082:8082"
     environment:
+      - LAND_DATASOURCE_URL=${LAND_DATASOURCE_URL}
+      - LAND_DATASOURCE_USERNAME=${LAND_DATASOURCE_USERNAME}
+      - LAND_DATASOURCE_PASSWORD=${LAND_DATASOURCE_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
     depends_on:
       - config-server
@@ -63,6 +70,11 @@ services:
     ports:
       - "8083:8083"
     environment:
+      - INVESTMENT_DATASOURCE_URL=${INVESTMENT_DATASOURCE_URL}
+      - INVESTMENT_DATASOURCE_USERNAME=${INVESTMENT_DATASOURCE_USERNAME}
+      - INVESTMENT_DATASOURCE_PASSWORD=${INVESTMENT_DATASOURCE_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
     depends_on:
       - config-server
@@ -78,9 +90,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
@@ -93,8 +105,8 @@ services:
     ports:
       - "5050:80"
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@landplatform.com
-      - PGADMIN_DEFAULT_PASSWORD=admin
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
       - PGADMIN_CONFIG_SERVER_MODE=False
     volumes:
       - pgadmin-data:/var/lib/pgadmin
@@ -137,7 +149,7 @@ services:
       - eureka-server
       - config-server
     networks:
-      - microservices-network
+      - land-platform-network
 
 networks:
   land-platform-network:

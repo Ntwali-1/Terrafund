@@ -23,9 +23,9 @@ eureka:
 
 # Cloudinary Configuration
 cloudinary:
-  cloud-name: ${CLOUDINARY_CLOUD_NAME:dwzy8ynvp}
-  api-key: ${CLOUDINARY_API_KEY:697423964567684}
-  api-secret: ${CLOUDINARY_API_SECRET:j_ara_l1OAlEbN7vFXy8DMCCaj0}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
 
 management:
   endpoints:

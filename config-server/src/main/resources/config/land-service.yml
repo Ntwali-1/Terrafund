@@ -6,9 +6,9 @@ spring:
     name: land-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/landdb
-    username: postgres
-    password: postgres
+    url: ${LAND_DATASOURCE_URL:jdbc:postgresql://localhost:5432/landdb}
+    username: ${LAND_DATASOURCE_USERNAME:postgres}
+    password: ${LAND_DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -26,8 +26,8 @@ spring:
     open-in-view: false
 
 jwt:
-  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-  expiration: 86400000
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:86400000}
 
 eureka:
   client:
