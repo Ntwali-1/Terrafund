@@ -35,10 +35,10 @@ public class SecurityConfig {
                         // Actuator endpoints
                         .requestMatchers("/actuator/**").permitAll()
 
-                        // Public land endpoints - anyone can view
-                        .requestMatchers("/api/lands").permitAll()
-                        .requestMatchers("/api/lands/{id}").permitAll()
-                        .requestMatchers("/api/lands/search/**").permitAll()
+                        // Public land endpoints - anyone can view (GET only)
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/lands").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/lands/{id}").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/lands/search/**").permitAll()
 
                         // Protected endpoints - only LAND_OWNER can access
                         .requestMatchers("/api/lands/**").hasRole("LAND_OWNER")

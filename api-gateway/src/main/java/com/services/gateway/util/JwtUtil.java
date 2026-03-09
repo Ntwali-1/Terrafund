@@ -1,7 +1,6 @@
 package com.services.gateway.util;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,13 +17,13 @@ public class JwtUtil {
 
     public void validateToken(final String token) {
         Jwts.parser()
-                .verifyWith((SecretKey) getSignKey())
+                .setSigningKey(getSignKey())
                 .build()
-                .parseSignedClaims(token);
+                .parseClaimsJws(token);
     }
 
     private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+        byte[] keyBytes = SECRET.getBytes();
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

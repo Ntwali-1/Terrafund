@@ -6,10 +6,43 @@ spring:
     import: optional:configserver:http://localhost:8888
   cloud:
     config:
-      uri: ${SPRING_CLOUD_CONFIG_URI:http://localhost:8888}
+      uri: http://localhost:8888
       fail-fast: false
       enabled: true
 
+  datasource:
+    url: jdbc:postgresql://localhost:5432/investmentdb
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    open-in-view: false
+
 jwt:
-  secret: ${JWT_SECRET}
-  expiration: ${JWT_EXPIRATION:86400000}
+  secret: 9f4c2a7b8d13e6f0c5b9a1d4e8f2736b
+  expiration: 86400000
+
+server:
+  port: 8083
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}:${server.port}

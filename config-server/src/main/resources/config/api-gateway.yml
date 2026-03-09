@@ -57,8 +57,6 @@ spring:
           uri: lb://land-service
           predicates:
             - Path=/api/lands/**
-          filters:
-            - AuthenticationFilter
 
       globalcors:
         cors-configurations:
@@ -90,6 +88,13 @@ eureka:
       defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
     fetch-registry: true
     register-with-eureka: true
+    registry-fetch-interval-seconds: 5
+  instance:
+    hostname: localhost
+    prefer-ip-address: false
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 10
+    instance-id: ${spring.application.name}:${server.port}
 
 logging:
   level:

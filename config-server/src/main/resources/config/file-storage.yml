@@ -21,9 +21,9 @@ eureka:
     hostname: file-storage-service
 
 cloudinary:
-  cloud-name: ${CLOUDINARY_CLOUD_NAME}
-  api-key: ${CLOUDINARY_API_KEY}
-  api-secret: ${CLOUDINARY_API_SECRET}
+  cloud-name: dwzy8ynvp
+  api-key: 697423964567684
+  api-secret: j_ara_l1OAlEbN7vFXy8DMCCaj0
 
 management:
   endpoints:

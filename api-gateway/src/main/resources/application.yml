@@ -11,7 +11,7 @@ spring:
       enabled: true
 
 jwt:
-  secret: ${JWT_SECRET}
+  secret: 9f4c2a7b8d13e6f0c5b9a1d4e8f2736b
 
 server:
   port: 8080

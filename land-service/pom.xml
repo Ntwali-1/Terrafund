@@ -112,12 +112,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Spring Dotenv - Load .env files -->
-		<dependency>
-			<groupId>me.paulschwarz</groupId>
-			<artifactId>spring-dotenv</artifactId>
-			<version>4.0.0</version>
-		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

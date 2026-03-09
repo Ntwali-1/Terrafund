@@ -64,8 +64,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
+            } else {
+                // Token is invalid, but don't fail - let Spring Security decide based on endpoint config
+                logger.warn("Invalid JWT token, continuing without authentication");
             }
         } catch (Exception e) {
+            // Token validation failed, but don't fail the request - let Spring Security handle it
             logger.error("JWT validation error: " + e.getMessage());
         }
 
