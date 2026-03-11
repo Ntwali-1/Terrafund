@@ -129,8 +129,7 @@ public class UserServiceImpl implements UserService {
                 .map(UserRole::getRole)
                 .collect(Collectors.toSet());
 
-        return new LoginResponse(token, user.getId(), user.getEmail(),
-                user.getFullName(), roles, user.getIsVerified());
+        return new LoginResponse(token, mapToUserResponse(user));
     }
 
     @Override
