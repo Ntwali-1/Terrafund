@@ -70,8 +70,8 @@ spring:
               - "http://localhost:4200"
               - "http://localhost:8082"
               - "http://localhost:8088"
-              - "http://192.168.43.187:8088"
-              - "http://192.168.43.187:8080"
+              - "http://10.12.74.207:8088"
+              - "http://10.12.74.207:8080"
             allowedOriginPatterns:
               - "*"
             allowedMethods:
