@@ -10,6 +10,7 @@ import com.services.user_service.repository.UserRepository;
 import com.services.user_service.repository.UserRoleRepository;
 import com.services.user_service.repository.VerificationTokenRepository;
 import com.services.user_service.security.JwtService;
+import com.services.user_service.service.EmailService;
 import com.services.user_service.service.UserActivityService;
 import com.services.user_service.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final UserActivityService activityService;
+    private final EmailService emailService;
 
     @Autowired
     public UserServiceImpl(
@@ -42,12 +44,14 @@ public class UserServiceImpl implements UserService {
             VerificationTokenRepository verificationTokenRepository,
             PasswordEncoder passwordEncoder,
             JwtService jwtService,
+            EmailService emailService,
             @Lazy UserActivityService activityService) {
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
         this.verificationTokenRepository = verificationTokenRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.emailService = emailService;
         this.activityService = activityService;
     }
 
@@ -68,7 +72,8 @@ public class UserServiceImpl implements UserService {
 
         User savedUser = userRepository.save(user);
 
-        String token = UUID.randomUUID().toString();
+        // Generate 4-digit numeric OTP
+        String token = String.format("%04d", new Random().nextInt(10000));
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
         verificationToken.setUser(savedUser);
@@ -86,8 +91,8 @@ public class UserServiceImpl implements UserService {
                 null
         );
 
-        // TODO: Send verification email
-        // emailService.sendVerificationEmail(savedUser.getEmail(), token);
+        // Send OTP verification email
+        emailService.sendVerificationEmail(savedUser.getEmail(), token);
 
         return mapToUserResponse(savedUser);
     }
@@ -226,16 +231,16 @@ public class UserServiceImpl implements UserService {
         verificationTokenRepository.findByUserId(user.getId())
                 .ifPresent(verificationTokenRepository::delete);
 
-        // Create new token
-        String token = UUID.randomUUID().toString();
+        // Create new 4-digit OTP
+        String token = String.format("%04d", new Random().nextInt(10000));
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
         verificationToken.setUser(user);
         verificationToken.setExpiryDate(LocalDateTime.now().plusHours(24));
         verificationTokenRepository.save(verificationToken);
 
-        // TODO: Send verification email
-        // emailService.sendVerificationEmail(user.getEmail(), token);
+        // Send OTP verification email
+        emailService.sendVerificationEmail(user.getEmail(), token);
     }
 
     private UserResponse mapToUserResponse(User user) {
