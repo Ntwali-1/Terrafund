@@ -32,7 +32,7 @@ eureka:
     registry-fetch-interval-seconds: 5
   instance:
     hostname: localhost
-    prefer-ip-address: false
+    prefer-ip-address: true
     lease-renewal-interval-in-seconds: 5
     lease-expiration-duration-in-seconds: 10
     instance-id: ${spring.application.name}:${server.port}
