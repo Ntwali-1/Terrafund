@@ -35,4 +35,7 @@ public class CreateLandRequest {
 
     @NotNull(message = "Availability type is required")
     private AvailabilityType availabilityType;
+
+    private java.util.List<String> imageUrls;
+    private java.util.List<String> documentUrls;
 }

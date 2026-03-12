@@ -72,7 +72,7 @@ public class LandController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('LAND_ONWER')")
+    @PreAuthorize("hasRole('LAND_OWNER')")
     public ResponseEntity<LandResponse> updateLand(
             @PathVariable Long id,
             @Valid @RequestBody UpdateLandRequest request) {
@@ -83,7 +83,7 @@ public class LandController {
     }
     
     @PatchMapping("/{id}/status")
-    @PreAuthorize("hasRole('LAND_ONWER')")
+    @PreAuthorize("hasRole('LAND_OWNER')")
     public ResponseEntity<LandResponse> updateLandStatus(
             @PathVariable Long id,
             @RequestParam LandStatus status) {
@@ -95,7 +95,7 @@ public class LandController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('LAND_ONWER')")
+    @PreAuthorize("hasRole('LAND_OWNER')")
     public ResponseEntity<Void> deleteLand(@PathVariable Long id) {
 
         Long currentUserId = SecurityUtils.getCurrentUserId();
@@ -145,8 +145,21 @@ public class LandController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/my")
+    @PreAuthorize("hasRole('LAND_OWNER')")
+    public ResponseEntity<Page<LandSummaryResponse>> getMyLands(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Long currentUserId = SecurityUtils.getCurrentUserId();
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<LandSummaryResponse> response = landService.getLandsByOwner(currentUserId, pageable);
+
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/{id}/images")
-    @PreAuthorize("hasRole('LAND_ONWER')")
+    @PreAuthorize("hasRole('LAND_OWNER')")
     public ResponseEntity<LandResponse> addImages(
             @PathVariable Long id,
             @Valid @RequestBody UploadImagesRequest request) {

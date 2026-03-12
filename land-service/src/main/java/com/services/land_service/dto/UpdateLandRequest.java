@@ -30,4 +30,7 @@ public class UpdateLandRequest {
     private Double areaSqMeters;
 
     private AvailabilityType availabilityType;
+
+    private java.util.List<String> imageUrls;
+    private java.util.List<String> documentUrls;
 }

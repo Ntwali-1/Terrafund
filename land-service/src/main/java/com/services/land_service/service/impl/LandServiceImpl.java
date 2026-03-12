@@ -39,8 +39,8 @@ public class LandServiceImpl implements LandService {
         land.setAreaSqMeters(request.getAreaSqMeters());
         land.setAvailabilityType(request.getAvailabilityType());
         land.setStatus(LandStatus.AVAILABLE);
-        land.setImageUrls(new ArrayList<>());
-        land.setDocumentUrls(new ArrayList<>());
+        land.setImageUrls(request.getImageUrls() != null ? request.getImageUrls() : new ArrayList<>());
+        land.setDocumentUrls(request.getDocumentUrls() != null ? request.getDocumentUrls() : new ArrayList<>());
 
         Land savedLand = landRepository.save(land);
         log.info("Land created successfully with ID: {}", savedLand.getId());
@@ -95,6 +95,12 @@ public class LandServiceImpl implements LandService {
         }
         if (request.getAvailabilityType() != null) {
             land.setAvailabilityType(request.getAvailabilityType());
+        }
+        if (request.getImageUrls() != null) {
+            land.setImageUrls(request.getImageUrls());
+        }
+        if (request.getDocumentUrls() != null) {
+            land.setDocumentUrls(request.getDocumentUrls());
         }
 
         Land updatedLand = landRepository.save(land);
@@ -254,5 +260,13 @@ public class LandServiceImpl implements LandService {
 
         log.info("Document removed successfully");
         return landMapper.toResponse(updatedLand);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<LandSummaryResponse> getLandsByOwner(Long ownerId, Pageable pageable) {
+        log.info("Fetching lands for owner ID: {}", ownerId);
+        return landRepository.findByOwnerId(ownerId, pageable)
+                .map(landMapper::toSummaryResponse);
     }
 }

@@ -34,4 +34,6 @@ public interface LandService {
     LandResponse removeImage(Long id, String imageUrl, Long currentUserId);
 
     LandResponse removeDocument(Long id, String documentUrl,Long currentUserId);
+
+    Page<LandSummaryResponse> getLandsByOwner(Long ownerId, Pageable pageable);
 }

@@ -17,4 +17,5 @@ public interface LandRepository extends JpaRepository<Land, Long> {
     Page<Land> findByStatus(LandStatus status, Pageable pageable);
 
     Page<Land> findByAreaSqMetersBetween(Double minArea, Double maxArea, Pageable pageable);
+    Page<Land> findByOwnerId(Long ownerId, Pageable pageable);
 }

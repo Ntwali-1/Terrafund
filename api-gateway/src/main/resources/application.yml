@@ -50,6 +50,23 @@ spring:
           predicates:
             - Path=/api/users/**
 
+        - id: land-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/lands/**
+
+        - id: file-storage
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/files/**
+
+        - id: file-storage-openapi
+          uri: lb://file-storage
+          predicates:
+            - Path=/file-storage/v3/api-docs
+          filters:
+            - RewritePath=/file-storage/v3/api-docs, /api-docs
+
 jwt:
   secret: 9f4c2a7b8d13e6f0c5b9a1d4e8f2736b
 
@@ -66,6 +83,8 @@ springdoc:
         url: /investment-service/v3/api-docs
       - name: Land Service
         url: /land-service/v3/api-docs
+      - name: File Storage Service
+        url: /file-storage/v3/api-docs
   api-docs:
     enabled: true
 

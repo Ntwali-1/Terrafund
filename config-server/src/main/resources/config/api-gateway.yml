@@ -36,6 +36,13 @@ spring:
           filters:
             - RewritePath=/land-service/v3/api-docs, /v3/api-docs
 
+        - id: file-storage-openapi
+          uri: lb://file-storage
+          predicates:
+            - Path=/file-storage/v3/api-docs
+          filters:
+            - RewritePath=/file-storage/v3/api-docs, /api-docs
+
         - id: user-service-auth
           uri: http://localhost:8081
           predicates:
@@ -59,6 +66,11 @@ spring:
           uri: lb://land-service
           predicates:
             - Path=/api/lands/**
+
+        - id: file-storage
+          uri: lb://file-storage
+          predicates:
+            - Path=/api/files/**
 
       globalcors:
         add-to-simple-url-handler-mapping: true
@@ -93,6 +105,8 @@ springdoc:
         url: /investment-service/v3/api-docs
       - name: Land Service
         url: /land-service/v3/api-docs
+      - name: File Storage Service
+        url: /file-storage/v3/api-docs
 
 eureka:
   client:
