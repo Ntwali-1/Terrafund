@@ -46,6 +46,10 @@ public class LandMapper {
         response.setStatus(land.getStatus());
         response.setCreatedAt(land.getCreatedAt());
 
+        if (land.getImageUrls() != null && !land.getImageUrls().isEmpty()) {
+            response.setThumbnailUrl(land.getImageUrls().get(0));
+        }
+
         return response;
     }
 }
